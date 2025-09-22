@@ -17,6 +17,7 @@ namespace GeometRi
         private Coord3d _coord;
 
         private double _a, _b, _c, _d;
+        private double _aGlobal, _bGlobal, _cGlobal, _dGlobal;
 
         internal bool HasChanged => _point.HasChanged || _normal.HasChanged;
         private void CheckFields()
@@ -153,6 +154,13 @@ namespace GeometRi
             _b = nc.Y;
             _c = nc.Z;
             _d = -nc.X * pc.X - nc.Y * pc.Y - nc.Z * pc.Z;
+
+            Vector3d ng = _normal.ConvertTo(Coord3d.GlobalCS);
+            Point3d pg = _point.ConvertTo(Coord3d.GlobalCS);
+            _aGlobal = ng.X;
+            _bGlobal = ng.Y;
+            _cGlobal = ng.Z;
+            _dGlobal = -ng.X * pg.X - ng.Y * pg.Y - ng.Z * pg.Z;
         }
 
         /// <summary>
@@ -200,6 +208,54 @@ namespace GeometRi
             {
                 if (_coord == null) { SetCoord(); }
                 return _d;
+            }
+        }
+
+        /// <summary>
+        /// Coefficient A in the general plane equation
+        /// </summary>
+        public double AGlobal
+        {
+            get
+            {
+                if (_coord == null) { SetCoord(); }
+                return _aGlobal;
+            }
+        }
+
+        /// <summary>
+        /// Coefficient B in the general plane equation
+        /// </summary>
+        public double BGlobal
+        {
+            get
+            {
+                if (_coord == null) { SetCoord(); }
+                return _bGlobal;
+            }
+        }
+
+        /// <summary>
+        /// Coefficient C in the general plane equation
+        /// </summary>
+        public double CGlobal
+        {
+            get
+            {
+                if (_coord == null) { SetCoord(); }
+                return _cGlobal;
+            }
+        }
+
+        /// <summary>
+        /// Coefficient D in the general plane equation
+        /// </summary>
+        public double DGlobal
+        {
+            get
+            {
+                if (_coord == null) { SetCoord(); }
+                return _dGlobal;
             }
         }
 
@@ -324,7 +380,6 @@ namespace GeometRi
             else
             {
                 // Intersection point
-                this.SetCoord(r1.Coord);
                 r1 = r1 - ((r1 * n2) + this.D) / (s1 * n2) * s1;
                 return r1.ToPoint;
             }
@@ -337,10 +392,7 @@ namespace GeometRi
         public object IntersectionWith(Plane3d s2, Plane3d s3)
         {
             // Set all planes to global CS
-            this.SetCoord(Coord3d.GlobalCS);
-            s2.SetCoord(Coord3d.GlobalCS);
-            s3.SetCoord(Coord3d.GlobalCS);
-            double det = new Matrix3d(new[] { A, B, C }, new[] { s2.A, s2.B, s2.C }, new [] { s3.A, s3.B, s3.C }).Det;
+            double det = new Matrix3d(new[] { AGlobal, BGlobal, CGlobal }, new[] { s2.AGlobal, s2.BGlobal, s2.CGlobal }, new [] { s3.AGlobal, s3.BGlobal, s3.CGlobal }).Det;
             //if (Abs(det) < GeometRi3D.Tolerance)
             if (Abs(det) < 1e-12)
                 {
@@ -378,9 +430,9 @@ namespace GeometRi
             }
             else
             {
-                double x = -new Matrix3d(new[] { D, B, C }, new[] { s2.D, s2.B, s2.C }, new[] { s3.D, s3.B, s3.C }).Det / det;
-                double y = -new Matrix3d(new[] { A, D, C }, new[] { s2.A, s2.D, s2.C }, new[] { s3.A, s3.D, s3.C }).Det / det;
-                double z = -new Matrix3d(new[] { A, B, D }, new[] { s2.A, s2.B, s2.D }, new[] { s3.A, s3.B, s3.D }).Det / det;
+                double x = -new Matrix3d(new[] { DGlobal, BGlobal, CGlobal }, new[] { s2.DGlobal, s2.BGlobal, s2.CGlobal }, new[] { s3.DGlobal, s3.BGlobal, s3.CGlobal }).Det / det;
+                double y = -new Matrix3d(new[] { AGlobal, DGlobal, CGlobal }, new[] { s2.AGlobal, s2.DGlobal, s2.CGlobal }, new[] { s3.AGlobal, s3.DGlobal, s3.CGlobal }).Det / det;
+                double z = -new Matrix3d(new[] { AGlobal, BGlobal, DGlobal }, new[] { s2.AGlobal, s2.BGlobal, s2.DGlobal }, new[] { s3.AGlobal, s3.BGlobal, s3.DGlobal }).Det / det;
                 return new Point3d(x, y, z);
             }
         }
