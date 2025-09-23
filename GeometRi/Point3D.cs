@@ -20,6 +20,22 @@ namespace GeometRi
         private double? _zGlobal;
         private Coord3d _coord;
 
+        private void CheckFields()
+        {
+            if (HasChanged)
+            {
+                HasChanged = false;
+                ClearCache();
+            }
+        }
+
+        private void ClearCache()
+        {
+            _xGlobal = null;
+            _yGlobal = null;
+            _zGlobal = null;
+        }
+
         #region "Constructors"
         /// <summary>
         /// Default constructor, initializes zero point.
@@ -103,7 +119,8 @@ namespace GeometRi
         {
             get
             {
-                if (_xGlobal == null || HasChanged)
+                CheckFields();
+                if (_xGlobal == null)
                 {
                     if (_coord is null || _coord == Coord3d.GlobalCS)
                     {
@@ -118,7 +135,6 @@ namespace GeometRi
                         _yGlobal = tmp[1] + _coord.Origin.YGlobal;
                         _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
                     }
-                    HasChanged = false;
                 }
                 return _xGlobal.Value;
             }
@@ -131,7 +147,8 @@ namespace GeometRi
         {
             get
             {
-                if (_yGlobal == null || HasChanged)
+                CheckFields();
+                if (_yGlobal == null)
                 {
                     if (_coord is null || _coord == Coord3d.GlobalCS)
                     {
@@ -146,7 +163,6 @@ namespace GeometRi
                         _yGlobal = tmp[1] + _coord.Origin.YGlobal;
                         _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
                     }
-                    HasChanged = false;
                 }
                 return _yGlobal.Value;
             }
@@ -159,7 +175,8 @@ namespace GeometRi
         {
             get
             {
-                if (_zGlobal == null ||HasChanged)
+                CheckFields();
+                if (_zGlobal == null)
                 {
                     if (_coord is null || _coord == Coord3d.GlobalCS)
                     {
@@ -174,7 +191,6 @@ namespace GeometRi
                         _yGlobal = tmp[1] + _coord.Origin.YGlobal;
                         _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
                     }
-                    HasChanged = false;
                 }
                 return _zGlobal.Value;
             }
@@ -232,8 +248,6 @@ namespace GeometRi
 
         public Point3d Add(Vector3d p, Coord3d resultCoord = null)
         {
-            // if ((this._coord != p._coord))
-            //     p = p.ConvertTo(this._coord);
             double x = this.XGlobal + p.XGlobal;
             double y = this.YGlobal + p.YGlobal;
             double z = this.ZGlobal + p.ZGlobal;
@@ -253,9 +267,10 @@ namespace GeometRi
             if (resultCoord == null || resultCoord == Coord3d.GlobalCS) return pt;
             return pt.ConvertTo(resultCoord);
         }
+
         public Point3d Subtract(Vector3d p, Coord3d resultCoord = null)
         {
-               double x = this.XGlobal - p.XGlobal;
+            double x = this.XGlobal - p.XGlobal;
             double y = this.YGlobal - p.YGlobal;
             double z = this.ZGlobal - p.ZGlobal;
 
@@ -279,7 +294,6 @@ namespace GeometRi
         /// </summary>
         public double DistanceTo(Point3d p)
         {
-
             return Sqrt((this.XGlobal - p.XGlobal) * (this.XGlobal - p.XGlobal) + (this.YGlobal - p.YGlobal) * (this.YGlobal - p.YGlobal) + (this.ZGlobal - p.ZGlobal) * (this.ZGlobal - p.ZGlobal));
         }
 
@@ -673,7 +687,7 @@ namespace GeometRi
         /// </summary>
         public Point3d Translate(Vector3d v)
         {
-               return this + v.ToPoint;
+            return this + v.ToPoint;
         }
 
         /// <summary>

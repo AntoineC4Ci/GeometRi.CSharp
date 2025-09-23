@@ -440,11 +440,6 @@ namespace GeometRi
         public Vector3d Mult(double a)
         {
             return new Vector3d(a * X, a * Y, a * Z, _coord);
-            //     ; this.Copy();
-            //tmp[0] *= a;
-            //tmp[1] *= a;
-            // tmp[2] *= a;
-            //return tmp;
         }
 
         /// <summary>
