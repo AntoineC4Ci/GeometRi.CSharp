@@ -502,7 +502,7 @@ namespace GeometRi
             {
                 v1 = coord.Axes * v1;
                 v1._coord = coord;
-                HasChanged = true;
+                v1.HasChanged = true;
             }
             return v1;
         }
