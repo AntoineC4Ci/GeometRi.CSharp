@@ -154,7 +154,7 @@ namespace GeometRi
         public double this[int i]
         {
             get { return val[i]; }
-            set { val[i] = value; }
+            set { val[i] = value; HasChanged = true; }
         }
 
         /// <summary>

@@ -43,6 +43,8 @@ namespace GeometRi_Tests
             Point3d p2 = new Point3d(1, -5, -1);
             Vector3d v2 = new Vector3d(-2, 3, 4);
             Line3d l1 = new Line3d(p2, v2);
+            var test = Abs(p1.DistanceTo(l1) - 3);
+
             Assert.IsTrue(Abs(p1.DistanceTo(l1) - 3) < GeometRi3D.Tolerance);
 
             Assert.IsTrue(Abs(p1.DistanceSquared(l1) - 3*3) < GeometRi3D.Tolerance);
