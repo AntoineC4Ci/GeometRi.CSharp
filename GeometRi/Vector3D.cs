@@ -51,7 +51,6 @@ namespace GeometRi
             this.val[2] = 0.0;
 
             _coord = (coord == null) ? Coord3d.GlobalCS : coord;
-            _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
         }
 
         /// <summary>
@@ -66,8 +65,6 @@ namespace GeometRi
             this.val[2] = Z;
 
             _coord = (coord == null) ? Coord3d.GlobalCS : coord;
-            _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
-
         }
 
         /// <summary>
@@ -82,8 +79,6 @@ namespace GeometRi
             this.val[2] = tmp.Z;
 
             _coord = (coord == null) ? Coord3d.GlobalCS : coord;
-            _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
-
         }
 
         /// <summary>
@@ -126,8 +121,6 @@ namespace GeometRi
             this.val[1] = a[1];
             this.val[2] = a[2];
             _coord = (coord == null) ? Coord3d.GlobalCS : coord;
-            _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
-
         }
         #endregion
 
@@ -203,7 +196,7 @@ namespace GeometRi
                 CheckFields();
                 if (_valGlobal == null)
                 {
-                    _valGlobal = this.ConvertToGlobal().val;
+                    _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
                     HasChanged = false;
                 }
                 return _valGlobal[0];
@@ -217,7 +210,7 @@ namespace GeometRi
                 CheckFields();
                 if (_valGlobal == null)
                 {
-                    _valGlobal = this.ConvertToGlobal().val;
+                    _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
                     HasChanged = false;
                 }
                 return _valGlobal[1];
@@ -231,7 +224,8 @@ namespace GeometRi
                 CheckFields();
                 if (_valGlobal == null)
                 {
-                    _valGlobal = this.ConvertToGlobal().val;
+                    _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
+                    HasChanged = false;
                 }
                 return _valGlobal[2];
             }
@@ -502,7 +496,6 @@ namespace GeometRi
             {
                 v1 = coord.Axes * v1;
                 v1._coord = coord;
-                v1.HasChanged = true;
             }
             return v1;
         }

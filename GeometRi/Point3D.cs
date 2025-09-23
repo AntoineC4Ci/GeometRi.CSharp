@@ -15,9 +15,9 @@ namespace GeometRi
         private double _x;
         private double _y;
         private double _z;
-        private double _xGlobal;
-        private double _yGlobal;
-        private double _zGlobal;
+        private double? _xGlobal;
+        private double? _yGlobal;
+        private double? _zGlobal;
         private Coord3d _coord;
 
         #region "Constructors"
@@ -30,12 +30,7 @@ namespace GeometRi
             _x = 0.0;
             _y = 0.0;
             _z = 0.0;
-
             _coord = (coord == null) ? Coord3d.GlobalCS : coord;
-            var tmp = _coord.Axes.TransposeMult(0, 0, 0);
-            _xGlobal = tmp[0] + _coord.Origin.X;
-            _yGlobal = tmp[1] + _coord.Origin.Y;
-            _zGlobal = tmp[2] + _coord.Origin.Z;
         }
 
         /// <summary>
@@ -47,23 +42,8 @@ namespace GeometRi
             _x = x;
             _y = y;
             _z = z;
-            if (coord == null || coord == Coord3d.GlobalCS)
-            {
-                _xGlobal = x;
-                _yGlobal = y;
-                _zGlobal = z;
 
-                _coord = Coord3d.GlobalCS;
-
-            }
-            else
-            {
-                _coord = (coord == null) ? Coord3d.GlobalCS : coord;
-                var tmp = _coord.Axes.TransposeMult(_x, _y, _z);
-                _xGlobal = tmp[0] + _coord.Origin.X;
-                _yGlobal = tmp[1] + _coord.Origin.Y;
-                _zGlobal = tmp[2] + _coord.Origin.Z;
-            }
+            _coord = coord == null ? Coord3d.GlobalCS : coord;
         }
 
         /// <summary>
@@ -78,10 +58,6 @@ namespace GeometRi
             _y = a[1];
             _z = a[2];
             _coord = (coord == null) ? Coord3d.GlobalCS : coord;
-            var tmp = _coord.Axes.TransposeMult(0, 0, 0);
-            _xGlobal = tmp[0] + _coord.Origin.X;
-            _yGlobal = tmp[1] + _coord.Origin.Y;
-            _zGlobal = tmp[2] + _coord.Origin.Z;
         }
         #endregion
 
@@ -127,15 +103,24 @@ namespace GeometRi
         {
             get
             {
-                if (HasChanged)
+                if (HasChanged || _xGlobal == null)
                 {
-                    var tmp = _coord.Axes.TransposeMult(X, Y, Z);
-                    _xGlobal = tmp[0] + _coord.Origin.X;
-                    _yGlobal = tmp[1] + _coord.Origin.Y;
-                    _zGlobal = tmp[2] + _coord.Origin.Z;
+                    if (_coord is null || _coord == Coord3d.GlobalCS)
+                    {
+                        _xGlobal = X;
+                        _yGlobal = Y;
+                        _zGlobal = Z;
+                    }
+                    else
+                    {
+                        var tmp = _coord.Axes.TransposeMult(X, Y, Z);
+                        _xGlobal = tmp[0] + _coord.Origin.XGlobal;
+                        _yGlobal = tmp[1] + _coord.Origin.YGlobal;
+                        _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
+                    }
                     HasChanged = false;
                 }
-                return _xGlobal;
+                return _xGlobal.Value;
             }
         }
 
@@ -146,15 +131,24 @@ namespace GeometRi
         {
             get
             {
-                if (HasChanged)
+                if (HasChanged || _xGlobal == null)
                 {
-                    var tmp = _coord.Axes.TransposeMult(X, Y, Z);
-                    _xGlobal = tmp[0] + _coord.Origin.X;
-                    _yGlobal = tmp[1] + _coord.Origin.Y;
-                    _zGlobal = tmp[2] + _coord.Origin.Z;
+                    if (_coord is null || _coord == Coord3d.GlobalCS)
+                    {
+                        _xGlobal = X;
+                        _yGlobal = Y;
+                        _zGlobal = Z;
+                    }
+                    else
+                    {
+                        var tmp = _coord.Axes.TransposeMult(X, Y, Z);
+                        _xGlobal = tmp[0] + _coord.Origin.XGlobal;
+                        _yGlobal = tmp[1] + _coord.Origin.YGlobal;
+                        _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
+                    }
                     HasChanged = false;
                 }
-                return _yGlobal;
+                return _yGlobal.Value;
             }
         }
 
@@ -165,15 +159,24 @@ namespace GeometRi
         {
             get
             {
-                if (HasChanged)
+                if (HasChanged || _xGlobal == null)
                 {
-                    var tmp = _coord.Axes.TransposeMult(X, Y, Z);
-                    _xGlobal = tmp[0] + _coord.Origin.X;
-                    _yGlobal = tmp[1] + _coord.Origin.Y;
-                    _zGlobal = tmp[2] + _coord.Origin.Z;
+                    if (_coord is null || _coord == Coord3d.GlobalCS)
+                    {
+                        _xGlobal = X;
+                        _yGlobal = Y;
+                        _zGlobal = Z;
+                    }
+                    else
+                    {
+                        var tmp = _coord.Axes.TransposeMult(X, Y, Z);
+                        _xGlobal = tmp[0] + _coord.Origin.XGlobal;
+                        _yGlobal = tmp[1] + _coord.Origin.YGlobal;
+                        _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
+                    }
                     HasChanged = false;
                 }
-                return _zGlobal;
+                return _zGlobal.Value;
             }
         }
 
@@ -201,10 +204,9 @@ namespace GeometRi
             Point3d p = this.ConvertToGlobal();
             if (coord == null || object.ReferenceEquals(coord, Coord3d.GlobalCS))
                 return p;
- 
+
             p = coord.Axes * (p - coord.Origin);
             p._coord = coord;
-            p.HasChanged = true; //forces the re-evaluation of Global coordinates, as the "*" operator has "wrongly" changed them 
 
             return p;
         }
