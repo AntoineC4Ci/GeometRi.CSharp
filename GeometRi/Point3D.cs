@@ -103,7 +103,7 @@ namespace GeometRi
         {
             get
             {
-                if (HasChanged || _xGlobal == null)
+                if (_xGlobal == null || HasChanged)
                 {
                     if (_coord is null || _coord == Coord3d.GlobalCS)
                     {
@@ -131,7 +131,7 @@ namespace GeometRi
         {
             get
             {
-                if (HasChanged || _xGlobal == null)
+                if (_yGlobal == null || HasChanged)
                 {
                     if (_coord is null || _coord == Coord3d.GlobalCS)
                     {
@@ -159,7 +159,7 @@ namespace GeometRi
         {
             get
             {
-                if (HasChanged || _xGlobal == null)
+                if (_zGlobal == null ||HasChanged)
                 {
                     if (_coord is null || _coord == Coord3d.GlobalCS)
                     {
