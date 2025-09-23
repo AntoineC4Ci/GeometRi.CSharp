@@ -87,6 +87,7 @@ namespace GeometRi_Tests
             Plane3d s1 = coord2.XZ_plane;
             s1.Point = s1.Point.ConvertTo(coord1);
 
+            var test = (Point3d)l1.IntersectionWith(s1);
             Assert.IsTrue((Point3d)l1.IntersectionWith(s1) == new Point3d(1, 2, 0));
         }
 

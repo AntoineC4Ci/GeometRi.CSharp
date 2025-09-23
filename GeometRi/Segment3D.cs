@@ -731,6 +731,7 @@ namespace GeometRi
                 // Overlaping segments
                 x1 = Max(x1, x3);
                 x2 = Min(x2, x4);
+
                 return new Segment3d(new Point3d(x1, 0, 0, cs), new Point3d(x2, 0, 0, cs));
             }
             else

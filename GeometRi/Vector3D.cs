@@ -36,7 +36,6 @@ namespace GeometRi
             _normalized = null;
             _valGlobal = null;
         }
-  
 
 
         #region "Constructors"
@@ -65,7 +64,7 @@ namespace GeometRi
             this.val[0] = X;
             this.val[1] = Y;
             this.val[2] = Z;
-            
+
             _coord = (coord == null) ? Coord3d.GlobalCS : coord;
             _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
 
@@ -76,11 +75,11 @@ namespace GeometRi
         /// </summary>
         public Vector3d(Point3d p, Coord3d coord = null)
         {
-            p = p.ConvertTo(coord);
+            var tmp = p.ConvertTo(coord);
             this.val = new double[3];
-            this.val[0] = p.X;
-            this.val[1] = p.Y;
-            this.val[2] = p.Z;
+            this.val[0] = tmp.X;
+            this.val[1] = tmp.Y;
+            this.val[2] = tmp.Z;
 
             _coord = (coord == null) ? Coord3d.GlobalCS : coord;
             _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
@@ -107,7 +106,7 @@ namespace GeometRi
             {
                 Vector3d tmp = new Vector3d(val[0], val[1], val[2], Coord3d.GlobalCS);
                 tmp = tmp.ConvertTo(coord);
-                
+
                 this.val[0] = tmp.X;
                 this.val[1] = tmp.Y;
                 this.val[2] = tmp.Z;
@@ -141,7 +140,7 @@ namespace GeometRi
             {
                 GeometRi3D.rnd = new Random();
             }
-            
+
             double u = GeometRi3D.rnd.NextDouble();
             double v = GeometRi3D.rnd.NextDouble();
             double theta = Acos(2 * u - 1);
@@ -182,7 +181,7 @@ namespace GeometRi
         public double Y
         {
             get { return val[1]; }
-            set { val[1] = value;  HasChanged = true;}
+            set { val[1] = value; HasChanged = true; }
         }
 
         /// <summary>
@@ -191,7 +190,7 @@ namespace GeometRi
         public double Z
         {
             get { return val[2]; }
-            set { val[2] = value;  HasChanged = true;}
+            set { val[2] = value; HasChanged = true; }
         }
 
         /// <summary>
@@ -294,12 +293,12 @@ namespace GeometRi
         // ILinearObject interface implementation
         public Vector3d Direction
         {
-            get { return this.Normalized;  }
+            get { return this.Normalized; }
         }
 
         public bool IsOriented
         {
-            get {  return true;  }
+            get { return true; }
         }
 
         /// <summary>
@@ -321,7 +320,7 @@ namespace GeometRi
             //if ((this._coord != v._coord))
             //    v = v.ConvertTo(this._coord);
 
-            return GeometRi3D.AlmostEqual(this.Normalized.Cross(v.Normalized).Norm, 0.0);        
+            return GeometRi3D.AlmostEqual(this.Normalized.Cross(v.Normalized).Norm, 0.0);
         }
 
         /// <summary>
@@ -329,7 +328,7 @@ namespace GeometRi
         /// </summary>
         public bool IsNotParallelTo(ILinearObject obj)
         {
-            return ! this.IsParallelTo(obj);
+            return !this.IsParallelTo(obj);
         }
 
         /// <summary>
@@ -338,8 +337,8 @@ namespace GeometRi
         public bool IsOrthogonalTo(ILinearObject obj)
         {
             Vector3d v = obj.Direction;
-            if ((this._coord != v._coord))
-                v = v.ConvertTo(this._coord);
+            //if ((this._coord != v._coord))
+            //    v = v.ConvertTo(this._coord);
 
             double this_norm = this.Norm;
             double v_norm = v.Norm;
@@ -360,7 +359,7 @@ namespace GeometRi
         /// </summary>
         public bool IsNotParallelTo(IPlanarObject obj)
         {
-            return ! this.Direction.IsOrthogonalTo(obj.Normal);
+            return !this.Direction.IsOrthogonalTo(obj.Normal);
         }
 
         /// <summary>
@@ -378,7 +377,7 @@ namespace GeometRi
         /// </summary>
         public Point3d ToPoint
         {
-            get { return new Point3d(val[0], val[1], val[2], _coord); }
+            get { return new Point3d(XGlobal, YGlobal, ZGlobal); }
         }
 
         /// <summary>
@@ -391,8 +390,8 @@ namespace GeometRi
                 CheckFields();
                 if (_normalized == null)
                 {
-                _normalized = this.Copy();
-                _normalized.Normalize();
+                    _normalized = this.Copy();
+                    _normalized.Normalize();
                 }
                 return _normalized;
             }
@@ -408,6 +407,7 @@ namespace GeometRi
             val[1] = val[1] * tmp;
             val[2] = val[2] * tmp;
             _norm = 1.0; //if we do not reset the _norm field, it is wrongly kept to it's original value (before it has been normalized)
+            HasChanged = true;
         }
 
         public Vector3d Add(double a)
@@ -447,7 +447,7 @@ namespace GeometRi
             double x = this.XGlobal - v.XGlobal;
             double y = this.YGlobal - v.YGlobal;
             double z = this.ZGlobal - v.ZGlobal;
-            var tmp =  new Vector3d(x, y, z, coord: Coord3d.GlobalCS);
+            var tmp = new Vector3d(x, y, z, coord: Coord3d.GlobalCS);
             if (_coord != null && _coord != Coord3d.GlobalCS)
             {
                 tmp = tmp.ConvertTo(_coord);
@@ -456,11 +456,12 @@ namespace GeometRi
         }
         public Vector3d Mult(double a)
         {
-            Vector3d tmp = this.Copy();
-            tmp[0] *= a;
-            tmp[1] *= a;
-            tmp[2] *= a;
-            return tmp;
+            return new Vector3d(a * X, a * Y, a * Z, _coord);
+            //     ; this.Copy();
+            //tmp[0] *= a;
+            //tmp[1] *= a;
+            // tmp[2] *= a;
+            //return tmp;
         }
 
         /// <summary>
@@ -470,7 +471,7 @@ namespace GeometRi
         {
             //if ((this._coord != v._coord))
             //    v = v.ConvertTo(this._coord);
-            return this._valGlobal[0] * v._valGlobal[0] + this._valGlobal[1] * v._valGlobal[1] + this._valGlobal[2] * v._valGlobal[2];
+            return this.XGlobal * v.XGlobal + this.YGlobal * v.YGlobal + this.ZGlobal * v.ZGlobal;
         }
 
         /// <summary>
@@ -496,12 +497,12 @@ namespace GeometRi
         /// </summary>
         public Vector3d ConvertTo(Coord3d coord)
         {
-            Vector3d v1 = this.Copy();
-            v1 = v1.ConvertToGlobal();
+            Vector3d v1 = this.ConvertToGlobal();
             if (coord != null && !object.ReferenceEquals(coord, Coord3d.GlobalCS))
             {
                 v1 = coord.Axes * v1;
                 v1._coord = coord;
+                HasChanged = true;
             }
             return v1;
         }
@@ -708,7 +709,7 @@ namespace GeometRi
         }
         public static Vector3d operator /(Vector3d v, double a)
         {
-            return v.Mult(1.0/a);
+            return v.Mult(1.0 / a);
         }
         public static Vector3d operator *(double a, Vector3d v)
         {

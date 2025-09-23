@@ -59,7 +59,7 @@ namespace GeometRi
             else
             {
                 _coord = (coord == null) ? Coord3d.GlobalCS : coord;
-                var tmp = _coord.Axes.TransposeMult(0, 0, 0);
+                var tmp = _coord.Axes.TransposeMult(_x, _y, _z);
                 _xGlobal = tmp[0] + _coord.Origin.X;
                 _yGlobal = tmp[1] + _coord.Origin.Y;
                 _zGlobal = tmp[2] + _coord.Origin.Z;
@@ -201,9 +201,10 @@ namespace GeometRi
             Point3d p = this.ConvertToGlobal();
             if (coord == null || object.ReferenceEquals(coord, Coord3d.GlobalCS))
                 return p;
-
+ 
             p = coord.Axes * (p - coord.Origin);
             p._coord = coord;
+            p.HasChanged = true; //forces the re-evaluation of Global coordinates, as the "*" operator has "wrongly" changed them 
 
             return p;
         }
@@ -213,17 +214,7 @@ namespace GeometRi
         /// <returns></returns>
         public Point3d ConvertToGlobal()
         {
-            if (_coord == null || object.ReferenceEquals(_coord, Coord3d.GlobalCS))
-            {
-                return this;
-            }
-            else
-            {
-                Point3d p = _coord.Axes.TransposeMult(this);
-                p._coord = Coord3d.GlobalCS;
-
-                return p + _coord.Origin;
-            }
+            return new Point3d(XGlobal, YGlobal, ZGlobal);
         }
 
         public Point3d Add(Point3d p, Coord3d resultCoord = null)
@@ -548,6 +539,14 @@ namespace GeometRi
             Vector3d r0 = new Vector3d(this);
             Vector3d r1 = l.Point.ToVector;
             Vector3d s = l.Direction;
+
+            var test = r1 - r0;
+            var test2 = test * s;
+            var test3 = s * s;
+            var test4 = test2 / test3;
+            var test5 = test4 * s;
+            var final = r1 - test5;
+
             r0 = r1 - ((r1 - r0) * s) / (s * s) * s;
             return r0.ToPoint;
         }
@@ -678,8 +677,8 @@ namespace GeometRi
         /// </summary>
         public Point3d Translate(Vector3d v)
         {
-            if ((this._coord != v.Coord))
-                v = v.ConvertTo(this._coord);
+            //if ((this._coord != v.Coord))
+            //   v = v.ConvertTo(this._coord);
             return this + v.ToPoint;
         }
 

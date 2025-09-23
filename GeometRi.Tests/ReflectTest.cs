@@ -62,8 +62,6 @@ namespace GeometRi_Tests
             s3.Point = s3.Point.ConvertTo(coord2);
             Plane3d s4 = s3.ReflectIn(s2);
 
-            bool bol = s4.Equals(s1);
-
             Assert.IsTrue(s4 == s1);
         }
 
@@ -78,8 +76,9 @@ namespace GeometRi_Tests
             Line3d lt = l1.ReflectIn(l2);
             lt.Point = lt.Point.ConvertTo(coord2);
 
+            var test = lt.ReflectIn(l2);
+
             Assert.IsTrue(lt.ReflectIn(l2) == l1);
         }
-
     }
 }
