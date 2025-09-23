@@ -119,21 +119,19 @@ namespace GeometRi
         {
             get
             {
-                CheckFields();
-                if (_xGlobal == null)
+                if (_coord is null || _coord == Coord3d.GlobalCS)
+                    return _x;
+                else
                 {
-                    if (_coord is null || _coord == Coord3d.GlobalCS)
+                    CheckFields();
+                    if (_xGlobal == null)
                     {
-                        _xGlobal = X;
-                        _yGlobal = Y;
-                        _zGlobal = Z;
-                    }
-                    else
-                    {
+
                         var tmp = _coord.Axes.TransposeMult(X, Y, Z);
                         _xGlobal = tmp[0] + _coord.Origin.XGlobal;
                         _yGlobal = tmp[1] + _coord.Origin.YGlobal;
                         _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
+
                     }
                 }
                 return _xGlobal.Value;
@@ -147,22 +145,15 @@ namespace GeometRi
         {
             get
             {
+                if (_coord is null || _coord == Coord3d.GlobalCS)
+                    return _y;
                 CheckFields();
                 if (_yGlobal == null)
                 {
-                    if (_coord is null || _coord == Coord3d.GlobalCS)
-                    {
-                        _xGlobal = X;
-                        _yGlobal = Y;
-                        _zGlobal = Z;
-                    }
-                    else
-                    {
-                        var tmp = _coord.Axes.TransposeMult(X, Y, Z);
-                        _xGlobal = tmp[0] + _coord.Origin.XGlobal;
-                        _yGlobal = tmp[1] + _coord.Origin.YGlobal;
-                        _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
-                    }
+                    var tmp = _coord.Axes.TransposeMult(X, Y, Z);
+                    _xGlobal = tmp[0] + _coord.Origin.XGlobal;
+                    _yGlobal = tmp[1] + _coord.Origin.YGlobal;
+                    _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
                 }
                 return _yGlobal.Value;
             }
@@ -175,24 +166,22 @@ namespace GeometRi
         {
             get
             {
-                CheckFields();
-                if (_zGlobal == null)
+                if (_coord is null || _coord == Coord3d.GlobalCS)
+                    return _z;
+                else
                 {
-                    if (_coord is null || _coord == Coord3d.GlobalCS)
-                    {
-                        _xGlobal = X;
-                        _yGlobal = Y;
-                        _zGlobal = Z;
-                    }
-                    else
+
+                    CheckFields();
+                    if (_zGlobal == null)
                     {
                         var tmp = _coord.Axes.TransposeMult(X, Y, Z);
                         _xGlobal = tmp[0] + _coord.Origin.XGlobal;
                         _yGlobal = tmp[1] + _coord.Origin.YGlobal;
                         _zGlobal = tmp[2] + _coord.Origin.ZGlobal;
                     }
+
+                    return _zGlobal.Value;
                 }
-                return _zGlobal.Value;
             }
         }
 

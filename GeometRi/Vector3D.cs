@@ -191,13 +191,19 @@ namespace GeometRi
         {
             get
             {
-                CheckFields();
-                if (_valGlobal == null)
+                if (_coord == null || _coord == Coord3d.GlobalCS)
                 {
-                    _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
-                    HasChanged = false;
+                    return val[0];
                 }
-                return _valGlobal[0];
+                else
+                {
+                    CheckFields();
+                    if (_valGlobal == null)
+                    {
+                        _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
+                    }
+                    return _valGlobal[0];
+                }
             }
         }
 
@@ -205,13 +211,19 @@ namespace GeometRi
         {
             get
             {
-                CheckFields();
-                if (_valGlobal == null)
+                if (_coord == null || _coord == Coord3d.GlobalCS)
                 {
-                    _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
-                    HasChanged = false;
+                    return val[1];
                 }
-                return _valGlobal[1];
+                else
+                {
+                    CheckFields();
+                    if (_valGlobal == null)
+                    {
+                        _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
+                    }
+                    return _valGlobal[1];
+                }
             }
         }
 
@@ -219,13 +231,19 @@ namespace GeometRi
         {
             get
             {
-                CheckFields();
-                if (_valGlobal == null)
+                if (_coord == null || _coord == Coord3d.GlobalCS)
                 {
-                    _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
-                    HasChanged = false;
+                    return val[2];
                 }
-                return _valGlobal[2];
+                else
+                {
+                    CheckFields();
+                    if (_valGlobal == null)
+                    {
+                        _valGlobal = _coord.Axes.TransposeMult(val[0], val[1], val[2]);
+                    }
+                    return _valGlobal[2];
+                }
             }
         }
 
