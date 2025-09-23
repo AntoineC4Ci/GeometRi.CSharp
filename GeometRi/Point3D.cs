@@ -812,11 +812,17 @@ namespace GeometRi
         /// </summary>
         public String ToString(Coord3d coord)
         {
-            if (coord == null) { coord = Coord3d.GlobalCS; }
-            Point3d p = this.ConvertTo(coord);
-
-            string str = string.Format("Point3d -> ({0,10:g5}, {1,10:g5}, {2,10:g5})", p.X, p.Y, p.Z) + System.Environment.NewLine;
-            return str;
+            double x, y, z;
+            if (coord == null || coord == Coord3d.GlobalCS)
+            {
+                x = XGlobal; y = YGlobal; z = ZGlobal;
+            }
+            else
+            {
+                Point3d p = this.ConvertTo(coord);
+                x = p.X; y = p.Y; z = p.Z;
+            }
+            return string.Format("Vector3d -> ({0,10:g5}, {1,10:g5}, {2,10:g5})", x, y, z) + System.Environment.NewLine;
         }
 
 

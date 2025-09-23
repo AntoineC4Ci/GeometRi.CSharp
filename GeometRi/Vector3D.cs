@@ -655,9 +655,17 @@ namespace GeometRi
         /// </summary>
         public String ToString(Coord3d coord)
         {
-            if (coord == null) { coord = Coord3d.GlobalCS; }
-            Vector3d v = this.ConvertTo(coord);
-            return string.Format("Vector3d -> ({0,10:g5}, {1,10:g5}, {2,10:g5})", v.X, v.Y, v.Z);
+            double x, y, z;
+            if (coord == null || coord == Coord3d.GlobalCS)
+            {
+                x = XGlobal; y = YGlobal; z = ZGlobal;
+            }
+            else
+            {
+                Vector3d v = this.ConvertTo(coord);
+                x = v.X; y = v.Y; z = v.Z;
+            }
+            return string.Format("Vector3d -> ({0,10:g5}, {1,10:g5}, {2,10:g5})", x, y, z);
         }
 
         // Operators overloads
