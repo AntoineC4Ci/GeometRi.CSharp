@@ -88,8 +88,6 @@ namespace GeometRi
         /// <param name="p2">End point.</param>
         public Vector3d(Point3d p1, Point3d p2, Coord3d coord = null)
         {
-            //if (p1.Coord != p2.Coord)
-            //    p2 = p2.ConvertTo(p1.Coord);
             this.val = new double[3];
             this.val[0] = p2.XGlobal - p1.XGlobal;
             this.val[1] = p2.YGlobal - p1.YGlobal;
@@ -311,9 +309,6 @@ namespace GeometRi
         public bool IsParallelTo(ILinearObject obj)
         {
             Vector3d v = obj.Direction;
-            //if ((this._coord != v._coord))
-            //    v = v.ConvertTo(this._coord);
-
             return GeometRi3D.AlmostEqual(this.Normalized.Cross(v.Normalized).Norm, 0.0);
         }
 
@@ -331,8 +326,6 @@ namespace GeometRi
         public bool IsOrthogonalTo(ILinearObject obj)
         {
             Vector3d v = obj.Direction;
-            //if ((this._coord != v._coord))
-            //    v = v.ConvertTo(this._coord);
 
             double this_norm = this.Norm;
             double v_norm = v.Norm;
@@ -414,8 +407,6 @@ namespace GeometRi
         }
         public Vector3d Add(Vector3d v)
         {
-            //if ((this._coord != v._coord))
-            //    v = v.ConvertTo(this._coord);
             double x = this.XGlobal + v.XGlobal;
             double y = this.YGlobal + v.YGlobal;
             double z = this.ZGlobal + v.ZGlobal;
@@ -436,8 +427,6 @@ namespace GeometRi
         }
         public Vector3d Subtract(Vector3d v)
         {
-            //if ((this._coord != v._coord))
-            //    v = v.ConvertTo(this._coord);
             double x = this.XGlobal - v.XGlobal;
             double y = this.YGlobal - v.YGlobal;
             double z = this.ZGlobal - v.ZGlobal;
@@ -463,8 +452,6 @@ namespace GeometRi
         /// </summary>
         public double Dot(Vector3d v)
         {
-            //if ((this._coord != v._coord))
-            //    v = v.ConvertTo(this._coord);
             return this.XGlobal * v.XGlobal + this.YGlobal * v.YGlobal + this.ZGlobal * v.ZGlobal;
         }
 
@@ -473,8 +460,6 @@ namespace GeometRi
         /// </summary>
         public Vector3d Cross(Vector3d v)
         {
-            //if ((this._coord != v._coord))
-            //    v = v.ConvertTo(this._coord);
             double x = this.YGlobal * v.ZGlobal - this.ZGlobal * v.YGlobal;
             double y = this.ZGlobal * v.XGlobal - this.XGlobal * v.ZGlobal;
             double z = this.XGlobal * v.YGlobal - this.YGlobal * v.XGlobal;
@@ -555,8 +540,6 @@ namespace GeometRi
         /// </summary>
         public Vector3d ProjectionTo(Vector3d v)
         {
-            //if ((this._coord != v._coord))
-            //    v = v.ConvertTo(this._coord);
             return (this * v) / (v * v) * v;
         }
 
@@ -640,8 +623,6 @@ namespace GeometRi
                 return false;
             }
             Vector3d v = (Vector3d)obj;
-            //if ((this._coord != v.Coord))
-            //    v = v.ConvertTo(_coord);
 
             if (GeometRi3D.UseAbsoluteTolerance)
             {

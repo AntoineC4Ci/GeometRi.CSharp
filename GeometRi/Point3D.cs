@@ -221,8 +221,6 @@ namespace GeometRi
 
         public Point3d Add(Point3d p, Coord3d resultCoord = null)
         {
-            //if ((this._coord != p._coord))
-            //    p = p.ConvertTo(this._coord);
             double x = this.XGlobal + p.XGlobal;
             double y = this.YGlobal + p.YGlobal;
             double z = this.ZGlobal + p.ZGlobal;
@@ -247,8 +245,6 @@ namespace GeometRi
 
         public Point3d Subtract(Point3d p, Coord3d resultCoord = null)
         {
-            //if ((this._coord != p._coord))
-            //    p = p.ConvertTo(this._coord);
             double x = this.XGlobal - p.XGlobal;
             double y = this.YGlobal - p.YGlobal;
             double z = this.ZGlobal - p.ZGlobal;
@@ -259,9 +255,7 @@ namespace GeometRi
         }
         public Point3d Subtract(Vector3d p, Coord3d resultCoord = null)
         {
-            //if ((this._coord != p._coord))
-            //    p = p.ConvertTo(this._coord);
-            double x = this.XGlobal - p.XGlobal;
+               double x = this.XGlobal - p.XGlobal;
             double y = this.YGlobal - p.YGlobal;
             double z = this.ZGlobal - p.ZGlobal;
 
@@ -679,9 +673,7 @@ namespace GeometRi
         /// </summary>
         public Point3d Translate(Vector3d v)
         {
-            //if ((this._coord != v.Coord))
-            //   v = v.ConvertTo(this._coord);
-            return this + v.ToPoint;
+               return this + v.ToPoint;
         }
 
         /// <summary>
