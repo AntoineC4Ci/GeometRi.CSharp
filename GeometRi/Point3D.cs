@@ -27,7 +27,15 @@ namespace GeometRi
         /// <param name="coord">Reference coordinate system (default - Coord3d.GlobalCS).</param>
         public Point3d(Coord3d coord = null)
         {
-            return new Point3d(0,0,0,coord);
+            _x = 0.0;
+            _y = 0.0;
+            _z = 0.0;
+
+            _coord = (coord == null) ? Coord3d.GlobalCS : coord;
+            var tmp = _coord.Axes.TransposeMult(0, 0, 0);
+            _xGlobal = tmp[0] + _coord.Origin.X;
+            _yGlobal = tmp[1] + _coord.Origin.Y;
+            _zGlobal = tmp[2] + _coord.Origin.Z;
         }
 
         /// <summary>
@@ -46,7 +54,7 @@ namespace GeometRi
                 _zGlobal = z;
 
                 _coord = Coord3d.GlobalCS;
-                var coordd = new Coord3d("");
+
             }
             else
             {
@@ -121,7 +129,7 @@ namespace GeometRi
             {
                 if (HasChanged)
                 {
-                    var tmp = _coord.Axes.TransposeMult(0, 0, 0);
+                    var tmp = _coord.Axes.TransposeMult(X, Y, Z);
                     _xGlobal = tmp[0] + _coord.Origin.X;
                     _yGlobal = tmp[1] + _coord.Origin.Y;
                     _zGlobal = tmp[2] + _coord.Origin.Z;
@@ -140,7 +148,7 @@ namespace GeometRi
             {
                 if (HasChanged)
                 {
-                    var tmp = _coord.Axes.TransposeMult(0, 0, 0);
+                    var tmp = _coord.Axes.TransposeMult(X, Y, Z);
                     _xGlobal = tmp[0] + _coord.Origin.X;
                     _yGlobal = tmp[1] + _coord.Origin.Y;
                     _zGlobal = tmp[2] + _coord.Origin.Z;
@@ -159,7 +167,7 @@ namespace GeometRi
             {
                 if (HasChanged)
                 {
-                    var tmp = _coord.Axes.TransposeMult(0, 0, 0);
+                    var tmp = _coord.Axes.TransposeMult(X, Y, Z);
                     _xGlobal = tmp[0] + _coord.Origin.X;
                     _yGlobal = tmp[1] + _coord.Origin.Y;
                     _zGlobal = tmp[2] + _coord.Origin.Z;
@@ -218,15 +226,17 @@ namespace GeometRi
             }
         }
 
-        public Point3d Add(Point3d p)
+        public Point3d Add(Point3d p, Coord3d resultCoord = null)
         {
-            if ((this._coord != p._coord))
-                p = p.ConvertTo(this._coord);
-            Point3d tmp = this.Copy();
-            tmp.X += p.X;
-            tmp.Y += p.Y;
-            tmp.Z += p.Z;
-            return tmp;
+            //if ((this._coord != p._coord))
+            //    p = p.ConvertTo(this._coord);
+            double x = this.XGlobal + p.XGlobal;
+            double y = this.YGlobal + p.YGlobal;
+            double z = this.ZGlobal + p.ZGlobal;
+
+            var pt = new Point3d(x, y, z, Coord3d.GlobalCS);
+            if (resultCoord == null || resultCoord == Coord3d.GlobalCS) return pt;
+            return pt.ConvertTo(resultCoord);
         }
 
         public Point3d Add(Vector3d p, Coord3d resultCoord = null)
